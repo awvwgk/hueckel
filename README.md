@@ -5,7 +5,7 @@ the Hückel unit (β) as well as Hückel molecular orbitals.
 
 ## How to use?
 
-run the program with a file name for interactive mode
+run the program without an argument for interactive mode
 
     s-h
 
