@@ -4,7 +4,7 @@ PROG=s-h
 
 OBJS_MOD  = time.o
 
-OBJS_MISC = help.o read.o error.o
+OBJS_MISC = help.o read.o error.o print.o
 
 OBJS_PROG = hueckel.o
 

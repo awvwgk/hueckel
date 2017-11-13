@@ -29,6 +29,24 @@ C - - all interfaces  - - - - - - - - - - - - - - - - - - - - - - - 1711
       logical,intent(out) :: infile
       integer,intent(out) :: step
       end subroutine rdargv
+      subroutine prmat(mat,d1,d2,name,unit,step)
+      integer,intent(in) :: d1,d2
+      real*8, intent(in) :: mat(d1,d2)
+      character(len=*),intent(in),optional :: name
+      integer,intent(in),optional :: unit,step
+      end subroutine prmat
+      subroutine prsmat(mat,d1,d2,name,unit,step)
+      integer,intent(in) :: d1,d2
+      real*8, intent(in) :: mat(d1,d2)
+      character(len=*),intent(in),optional :: name
+      integer,intent(in),optional :: unit,step
+      end subroutine prsmat
+      subroutine prrmat(mat,d1,d2,name,unit,step)
+      integer,intent(in) :: d1,d2
+      real*8, intent(in) :: mat(d1,d2)
+      character(len=*),intent(in),optional :: name
+      integer,intent(in),optional :: unit,step
+      end subroutine prrmat
       end interface
 C - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 1711
       real*8,parameter :: a2kc =    627.50947428 ! Eh → kcal/mol
@@ -46,6 +64,8 @@ C - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 1711
       integer,allocatable :: nocc(:)
       real*8  :: helem
       logical :: infile
+      nel = -1
+      nao = -1
       call prtime('S')
       timings_max = 2
       allocate( timings_cpu(timings_max),timings_wall(timings_max) ) 
@@ -72,12 +92,21 @@ C = = read Hückel matrix  = = = = = = = = = = = = = = = = = = = = = 1711
             write(*,'(''   '')',advance='no')
             read(*,'(a)') line
             if (index(line,'$end').ne.0) exit
+            if (line.eq.'') then
+               write(*,'(''$end'')')
+               exit
+            endif
             read(line,*,iostat=io) i,j,helem
             if (io.ne.0) call raise('E','Bad input!')
             hmat(i,j) = helem
             hmat(j,i) = helem
          enddo
       endif
+      if(nao.lt.0) call raise('E','Number of atoms not specified')
+      if(nao.lt.0) call raise('E','Number of electrons not specified')
+      if(.not.allocated(hmat)) call raise('E','No Hückel matrix given')
+      write(*,'(/,''* Hückel matrix:'')')
+      call prsmat(hmat,nao,nao,step=step)
 C - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 1711
       write(*,'(/,''* solving eigenvalue problem'')')
       allocate(work(4*nao),eigv(nao))
@@ -93,16 +122,7 @@ C - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 1711
          j = j + step
       enddo
       write(*,'(/,''* Hückel molecular orbitals:'')')
-      j = 1
-      do i = nao, 1, -step
-         l = max(i-(step-1),1)
-         write(*,'(/,4x,<step>(3x,i4,3x))') (k,k=j,nao-l+1)
-         do n = 1, nao
-             write(*,'(i4,<step>(f10.5))') n,(hmat(n,k),k=i,l,-1)
-         enddo
-         j = j + step
-      enddo
-      write(*,*)
+      call prrmat(hmat,nao,nao,step=step)
 C - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 1711
 
       call prtime('E')
