@@ -31,28 +31,26 @@
       if(present(unit)) then
          do i = 1, d2, step
             l = min(i+step-1,d2)
-            write(unit,'(/,4x,<step>(3x,i4,3x))') (k,k=i,l)
+            write(unit,'(/,6x,<step>(3x,i4,3x))') (k,k=i,l)
             do j = 1, d1
-               write(unit,'(i4,<step>(f10.5))') j,(mat(j,k),k=i,l)
+               write(unit,'(i6,<step>(f10.5))') j,(mat(j,k),k=i,l)
             enddo
          enddo
-         write(unit,*)
       else
          do i = 1, d2, step
             l = min(i+step-1,d2)
-            write(*,'(/,4x,<step>(3x,i4,3x))') (k,k=i,l)
+            write(*,'(/,6x,<step>(3x,i4,3x))') (k,k=i,l)
             do j = 1, d1
-               write(*,'(i4,<step>(f10.5))') j,(mat(j,k),k=i,l)
+               write(*,'(i6,<step>(f10.5))') j,(mat(j,k),k=i,l)
             enddo
          enddo
-         write(*,*)
       endif
       end subroutine prmat
 C - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 1711
-      subroutine prsmat(mat,d1,d2,name,unit,instep)
+      subroutine prsmat(mat,d,name,unit,instep)
       implicit none
-      integer,intent(in) :: d1,d2
-      real*8, intent(in) :: mat(d1,d2)
+      integer,intent(in) :: d
+      real*8, intent(in) :: mat(d,d)
       character(len=*),intent(in),optional :: name
       integer,intent(in),optional :: unit
       integer,intent(in),optional :: instep
@@ -64,27 +62,25 @@ C - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 1711
       endif
       if(present(name)) write(*,'(/,''matrix printed:'',x,a)') name
       if(present(unit)) then
-         do i = 1, d2, step
-            l = min(i+step-1,d2)
-            write(unit,'(/,4x,<step>(3x,i4,3x))') (k,k=i,l)
-            do j = 1, d1
+         do i = 1, d, step
+            l = min(i+step-1,d)
+            write(unit,'(/,6x,<step>(3x,i4,3x))') (k,k=i,l)
+            do j = 1, d
                l = min(i+(step-1),j)
                if(j.lt.i) cycle
-               write(unit,'(i4,<step>(f10.5))') j,(mat(j,k),k=i,l)
+               write(unit,'(i6,<step>(f10.5))') j,(mat(j,k),k=i,l)
             enddo
          enddo
-         write(unit,*)
       else
-         do i = 1, d2, step
-            l = min(i+step-1,d2)
-            write(*,'(/,4x,<step>(3x,i4,3x))') (k,k=i,l)
-            do j = 1, d1
+         do i = 1, d, step
+            l = min(i+step-1,d)
+            write(*,'(/,6x,<step>(3x,i4,3x))') (k,k=i,l)
+            do j = 1, d
                l = min(i+(step-1),j)
                if(j.lt.i) cycle
-               write(*,'(i4,<step>(f10.5))') j,(mat(j,k),k=i,l)
+               write(*,'(i6,<step>(f10.5))') j,(mat(j,k),k=i,l)
             enddo
          enddo
-         write(*,*)
       endif
       end subroutine prsmat
 C - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 1711
@@ -106,23 +102,23 @@ C - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 1711
          j = 1
          do i = d1, 1, -step
             l = max(i-(step-1),1)
-            write(unit,'(/,4x,<step>(3x,i4,3x))') (k,k=j,d1-l+1)
+            write(unit,'(/,6x,<step>(3x,i4,3x))') (k,k=j,d1-l+1)
             do m = 1, d2
-               write(unit,'(i4,<step>(f10.5))') m,(mat(m,k),k=i,l,-1)
+               write(unit,'(i6,<step>(f10.5))') m,(mat(m,k),k=i,l,-1)
             enddo
             j = j + step
          enddo
-         write(unit,*)
+         write(unit,'(a)')
       else
          j = 1
          do i = d1, 1, -step
             l = max(i-(step-1),1)
-            write(*,'(/,4x,<step>(3x,i4,3x))') (k,k=j,d1-l+1)
+            write(*,'(/,6x,<step>(3x,i4,3x))') (k,k=j,d1-l+1)
             do m = 1, d2
-               write(*,'(i4,<step>(f10.5))') m,(mat(m,k),k=i,l,-1)
+               write(*,'(i6,<step>(f10.5))') m,(mat(m,k),k=i,l,-1)
             enddo
             j = j + step
          enddo
-         write(*,*)
+         write(*,'(a)')
       endif
       end subroutine prrmat
